@@ -39,6 +39,7 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:password@postgres:5432/customer_db
       FLASK_API_URL: http://mock-server:5000
+      DESTINATION__POSTGRES__CREDENTIALS: postgresql://postgres:password@postgres:5432/customer_db
 
 volumes:
   postgres_data:

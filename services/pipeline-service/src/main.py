@@ -24,14 +24,23 @@ def health_check():
 
 
 @app.post("/api/ingest")
-def ingest_data(db: Session = Depends(get_db)):
+def ingest_data():
     try:
-        records_processed = run_ingestion(db)
-        return {"status": "success", "records_processed": records_processed}
+        result = run_ingestion()
+        return {
+            "status": "success",
+            "records_processed": result.get("rows_loaded", 0),
+            "details": result.get("load_info", ""),
+        }
     except Exception as e:
+        import traceback
         return JSONResponse(
             status_code=500,
-            content={"status": "error", "message": str(e)}
+            content={
+                "status": "error",
+                "message": str(e),
+                "traceback": traceback.format_exc()
+            }
         )
 
 
