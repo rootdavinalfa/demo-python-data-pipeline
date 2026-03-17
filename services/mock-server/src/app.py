@@ -1,16 +1,27 @@
 import json
 import os
 from flask import Flask, jsonify, request, abort
+from datetime import datetime
+
+from packages.shared.src.schemas import (
+    HealthResponse,
+    CustomerResponse,
+    PaginatedResponse,
+    ErrorResponse,
+)
 
 app = Flask(__name__)
 
 DATA_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "customers.json")
 
+
 def load_customers():
     with open(DATA_FILE, "r") as f:
         return json.load(f)
 
+
 _customers = None
+
 
 def get_customers():
     global _customers
@@ -21,7 +32,8 @@ def get_customers():
 
 @app.route("/api/health", methods=["GET"])
 def health_check():
-    return jsonify({"status": "healthy"})
+    response = HealthResponse(status="healthy")
+    return jsonify(response.model_dump())
 
 
 @app.route("/api/customers", methods=["GET"])
@@ -41,12 +53,13 @@ def get_customers_list():
     end = start + limit
     paginated_data = customers[start:end]
     
-    return jsonify({
-        "data": paginated_data,
-        "total": total,
-        "page": page,
-        "limit": limit
-    })
+    response = PaginatedResponse(
+        data=paginated_data,
+        total=total,
+        page=page,
+        limit=limit
+    )
+    return jsonify(response.model_dump())
 
 
 @app.route("/api/customers/<customer_id>", methods=["GET"])
@@ -55,14 +68,19 @@ def get_customer(customer_id):
     
     for customer in customers:
         if customer.get("customer_id") == customer_id:
-            return jsonify(customer)
+            if customer.get("created_at"):
+                customer["created_at"] = datetime.fromisoformat(customer["created_at"])
+            
+            response = CustomerResponse(**customer)
+            return jsonify(response.model_dump())
     
     abort(404, description=f"Customer {customer_id} not found")
 
 
 @app.errorhandler(404)
 def resource_not_found(e):
-    return jsonify({"error": str(e)}), 404
+    response = ErrorResponse(error=str(e))
+    return jsonify(response.model_dump()), 404
 
 
 if __name__ == "__main__":

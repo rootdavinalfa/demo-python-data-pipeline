@@ -100,6 +100,42 @@ curl "http://localhost:8000/api/customers/CUST001"
 |----------|-------------|---------|
 | `DATABASE_URL` | PostgreSQL connection string | `postgresql://postgres:password@localhost:5432/customer_db` |
 | `FLASK_API_URL` | Mock server URL | `http://localhost:5000` |
+| `DESTINATION__POSTGRES__CREDENTIALS` | dlt PostgreSQL credentials | Same as `DATABASE_URL` |
+
+---
+
+## Architecture
+
+```
+┌─────────────────┐     ┌──────────────────────┐     ┌─────────────┐
+│  Mock Server    │────▶│  Pipeline Service    │────▶│  PostgreSQL │
+│  (Flask:5000)   │     │  (FastAPI:8000)      │     │  (:5432)    │
+│                 │     │                      │     │             │
+│  JSON data      │     │  dlt rest_api_source │     │  customer_db│
+│  Pagination     │     │  SQLAlchemy ORM      │     │  schema     │
+└─────────────────┘     └──────────────────────┘     └─────────────┘
+```
+
+### Data Flow
+
+1. **Mock Server** serves customer data from `data/customers.json`
+2. **Pipeline Service** uses `dlt` to fetch and ingest data into PostgreSQL
+3. **PostgreSQL** stores data in `customer_db.customers` table
+
+---
+
+## Shared Package
+
+Both services use shared Pydantic schemas from `packages/shared/`:
+
+| Schema | Purpose |
+|--------|---------|
+| `HealthResponse` | Health check responses |
+| `CustomerBase` | Customer data model |
+| `CustomerResponse` | Customer API response |
+| `PaginatedResponse` | Paginated list response |
+| `IngestResponse` | Ingestion result |
+| `ErrorResponse` | Error messages |
 
 ---
 

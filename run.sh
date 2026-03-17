@@ -9,7 +9,7 @@ if [ ! -d "venv" ]; then
 fi
 
 source venv/bin/activate
-export PYTHONPATH=$(pwd)/services/mock-server/src:$(pwd)/services/pipeline-service/src
+export PYTHONPATH=$(pwd):$(pwd)/services/mock-server/src:$(pwd)/services/pipeline-service/src
 export FLASK_APP=app
 export FLASK_ENV=development
 source .env

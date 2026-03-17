@@ -2,7 +2,7 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-ENV PYTHONPATH=/app/services/mock-server/src
+ENV PYTHONPATH=/app:/app/services/mock-server/src
 
 COPY packages/shared /app/packages/shared
 

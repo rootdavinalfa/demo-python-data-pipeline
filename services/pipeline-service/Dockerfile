@@ -2,7 +2,7 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-ENV PYTHONPATH=/app/services/pipeline-service/src
+ENV PYTHONPATH=/app:/app/services/pipeline-service/src
 
 COPY packages/shared /app/packages/shared
 

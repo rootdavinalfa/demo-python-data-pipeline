@@ -1,7 +1,10 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import date, datetime
-from decimal import Decimal
-from typing import Optional
+from typing import Optional, List, Any
+
+
+class HealthResponse(BaseModel):
+    status: str
 
 
 class CustomerBase(BaseModel):
@@ -14,8 +17,8 @@ class CustomerBase(BaseModel):
     phone: Optional[str] = None
     address: Optional[str] = None
     date_of_birth: Optional[date] = None
-    account_balance: Decimal
-    created_at: datetime
+    account_balance: Optional[float] = None
+    created_at: Optional[datetime] = None
 
 
 class CustomerResponse(CustomerBase):
@@ -23,7 +26,7 @@ class CustomerResponse(CustomerBase):
 
 
 class PaginatedResponse(BaseModel):
-    data: list
+    data: List[Any]
     total: int
     page: int
     limit: int
@@ -32,3 +35,8 @@ class PaginatedResponse(BaseModel):
 class IngestResponse(BaseModel):
     status: str
     records_processed: int
+    details: Optional[str] = None
+
+
+class ErrorResponse(BaseModel):
+    error: str
