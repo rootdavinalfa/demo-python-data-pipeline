@@ -1,0 +1,11 @@
+flask
+gunicorn
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+dlt
+dlt[postgres]
+httpx
+pydantic
+python-dotenv

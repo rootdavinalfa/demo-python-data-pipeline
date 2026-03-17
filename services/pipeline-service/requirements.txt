@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+gunicorn
+sqlalchemy
+psycopg2-binary
+dlt
+dlt[postgres]
+httpx
+pydantic

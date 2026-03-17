@@ -1,0 +1,8 @@
+pyproject.toml
+src/__init__.py
+src/schemas.py
+src/shared.egg-info/PKG-INFO
+src/shared.egg-info/SOURCES.txt
+src/shared.egg-info/dependency_links.txt
+src/shared.egg-info/requires.txt
+src/shared.egg-info/top_level.txt
